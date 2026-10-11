@@ -1,0 +1,1344 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TripTally – Perencana Perjalanan</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ============================================================
+       SVG ICON DEFINITIONS (reusable symbols)
+  ============================================================ -->
+  <!-- Inline SVG snippets are placed inline at each use-site for max compatibility. -->
+
+  <!-- ============================================================
+       OVERLAY & MODALS
+  ============================================================ -->
+
+  <!-- Modal: Tambah Perjalanan -->
+  <div class="modal" id="modal-tambah-perjalanan" role="dialog" aria-modal="true" aria-labelledby="mt-title">
+    <div class="modal__box">
+      <h2 class="modal__title" id="mt-title">Tambah Perjalanan</h2>
+      <form class="form" action="#">
+        <div class="form__group">
+          <label class="form__label" for="tp-nama">Nama Perjalanan <span class="form__required">*</span></label>
+          <input class="form__input" type="text" id="tp-nama" placeholder="cth. Liburan Pantai" required />
+        </div>
+        <div class="form__group">
+          <label class="form__label" for="tp-dest">Destinasi <span class="form__required">*</span></label>
+          <input class="form__input" type="text" id="tp-dest" placeholder="cth. Lombok, NTB" required />
+        </div>
+        <div class="form__row">
+          <div class="form__group">
+            <label class="form__label" for="tp-mulai">Tanggal Mulai</label>
+            <input class="form__input" type="date" id="tp-mulai" />
+          </div>
+          <div class="form__group">
+            <label class="form__label" for="tp-selesai">Tanggal Selesai</label>
+            <input class="form__input" type="date" id="tp-selesai" />
+          </div>
+        </div>
+        <div class="modal__actions">
+          <a href="#" class="btn btn--ghost" aria-label="Batal tambah perjalanan">Batal</a>
+          <button type="submit" class="btn btn--primary">Simpan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Edit Perjalanan -->
+  <div class="modal" id="modal-edit-perjalanan" role="dialog" aria-modal="true" aria-labelledby="mep-title">
+    <div class="modal__box">
+      <h2 class="modal__title" id="mep-title">Edit Perjalanan</h2>
+      <form class="form" action="#">
+        <div class="form__group">
+          <label class="form__label" for="ep-nama">Nama Perjalanan <span class="form__required">*</span></label>
+          <input class="form__input" type="text" id="ep-nama" value="Liburan Bali" required />
+        </div>
+        <div class="form__group">
+          <label class="form__label" for="ep-dest">Destinasi</label>
+          <input class="form__input" type="text" id="ep-dest" value="Bali, Indonesia" />
+        </div>
+        <div class="form__row">
+          <div class="form__group">
+            <label class="form__label" for="ep-mulai">Tanggal Mulai</label>
+            <input class="form__input" type="date" id="ep-mulai" value="2025-07-10" />
+          </div>
+          <div class="form__group">
+            <label class="form__label" for="ep-selesai">Tanggal Selesai</label>
+            <input class="form__input" type="date" id="ep-selesai" value="2025-07-14" />
+          </div>
+        </div>
+        <div class="modal__actions">
+          <a href="#" class="btn btn--ghost" aria-label="Batal edit perjalanan">Batal</a>
+          <button type="submit" class="btn btn--primary">Simpan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Hapus Perjalanan -->
+  <div class="modal" id="modal-hapus-perjalanan" role="dialog" aria-modal="true" aria-labelledby="mhp-title">
+    <div class="modal__box modal__box--sm">
+      <h2 class="modal__title" id="mhp-title">Hapus Perjalanan?</h2>
+      <p class="modal__body">Apakah Anda yakin ingin menghapus perjalanan <strong>Liburan Bali</strong>? Tindakan ini tidak dapat dibatalkan.</p>
+      <div class="modal__actions">
+        <a href="#" class="btn btn--ghost" aria-label="Batal hapus">Batal</a>
+        <button type="button" class="btn btn--danger">Hapus</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Tambah Aktivitas -->
+  <div class="modal" id="modal-tambah-aktivitas" role="dialog" aria-modal="true" aria-labelledby="mta-title">
+    <div class="modal__box">
+      <h2 class="modal__title" id="mta-title">Tambah Aktivitas</h2>
+      <form class="form" action="#">
+        <div class="form__group">
+          <label class="form__label" for="ta-judul">Judul Aktivitas <span class="form__required">*</span></label>
+          <input class="form__input" type="text" id="ta-judul" placeholder="cth. Snorkeling di Nusa Penida" required />
+        </div>
+        <div class="form__row">
+          <div class="form__group">
+            <label class="form__label" for="ta-jam">Jam</label>
+            <input class="form__input" type="time" id="ta-jam" />
+          </div>
+          <div class="form__group">
+            <label class="form__label" for="ta-lokasi">Lokasi</label>
+            <input class="form__input" type="text" id="ta-lokasi" placeholder="cth. Nusa Penida" />
+          </div>
+        </div>
+        <div class="form__group">
+          <label class="form__label" for="ta-catatan">Catatan</label>
+          <textarea class="form__input form__textarea" id="ta-catatan" placeholder="Tambahkan catatan..."></textarea>
+        </div>
+        <div class="modal__actions">
+          <a href="#" class="btn btn--ghost" aria-label="Batal tambah aktivitas">Batal</a>
+          <button type="submit" class="btn btn--primary">Simpan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Edit Aktivitas -->
+  <div class="modal" id="modal-edit-aktivitas" role="dialog" aria-modal="true" aria-labelledby="mea-title">
+    <div class="modal__box">
+      <h2 class="modal__title" id="mea-title">Edit Aktivitas</h2>
+      <form class="form" action="#">
+        <div class="form__group">
+          <label class="form__label" for="ea-judul">Judul Aktivitas</label>
+          <input class="form__input" type="text" id="ea-judul" value="Check-in Hotel Ubud" />
+        </div>
+        <div class="form__row">
+          <div class="form__group">
+            <label class="form__label" for="ea-jam">Jam</label>
+            <input class="form__input" type="time" id="ea-jam" value="14:00" />
+          </div>
+          <div class="form__group">
+            <label class="form__label" for="ea-lokasi">Lokasi</label>
+            <input class="form__input" type="text" id="ea-lokasi" value="Ubud, Bali" />
+          </div>
+        </div>
+        <div class="form__group">
+          <label class="form__label" for="ea-catatan">Catatan</label>
+          <textarea class="form__input form__textarea" id="ea-catatan">Bawa kartu identitas untuk check-in.</textarea>
+        </div>
+        <div class="modal__actions">
+          <a href="#" class="btn btn--ghost" aria-label="Batal edit aktivitas">Batal</a>
+          <button type="submit" class="btn btn--primary">Simpan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Hapus Aktivitas -->
+  <div class="modal" id="modal-hapus-aktivitas" role="dialog" aria-modal="true" aria-labelledby="mha-title">
+    <div class="modal__box modal__box--sm">
+      <h2 class="modal__title" id="mha-title">Hapus Aktivitas?</h2>
+      <p class="modal__body">Apakah Anda yakin ingin menghapus aktivitas ini?</p>
+      <div class="modal__actions">
+        <a href="#" class="btn btn--ghost" aria-label="Batal hapus aktivitas">Batal</a>
+        <button type="button" class="btn btn--danger">Hapus</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Tambah Teman -->
+  <div class="modal" id="modal-tambah-teman" role="dialog" aria-modal="true" aria-labelledby="mtt-title">
+    <div class="modal__box">
+      <h2 class="modal__title" id="mtt-title">Tambah Teman</h2>
+      <form class="form" action="#">
+        <div class="form__group">
+          <label class="form__label" for="tt-nama">Nama <span class="form__required">*</span></label>
+          <input class="form__input" type="text" id="tt-nama" placeholder="Nama lengkap" required />
+        </div>
+        <div class="form__group">
+          <label class="form__label" for="tt-email">Email <span class="form__optional">(opsional)</span></label>
+          <input class="form__input" type="email" id="tt-email" placeholder="email@contoh.com" />
+        </div>
+        <div class="modal__actions">
+          <a href="#" class="btn btn--ghost" aria-label="Batal tambah teman">Batal</a>
+          <button type="submit" class="btn btn--primary">Simpan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Edit Teman -->
+  <div class="modal" id="modal-edit-teman" role="dialog" aria-modal="true" aria-labelledby="met-title">
+    <div class="modal__box">
+      <h2 class="modal__title" id="met-title">Edit Teman</h2>
+      <form class="form" action="#">
+        <div class="form__group">
+          <label class="form__label" for="et-nama">Nama</label>
+          <input class="form__input" type="text" id="et-nama" value="Andi Saputra" />
+        </div>
+        <div class="form__group">
+          <label class="form__label" for="et-email">Email</label>
+          <input class="form__input" type="email" id="et-email" value="andi@email.com" />
+        </div>
+        <div class="modal__actions">
+          <a href="#" class="btn btn--ghost" aria-label="Batal edit teman">Batal</a>
+          <button type="submit" class="btn btn--primary">Simpan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Hapus Teman -->
+  <div class="modal" id="modal-hapus-teman" role="dialog" aria-modal="true" aria-labelledby="mht-title">
+    <div class="modal__box modal__box--sm">
+      <h2 class="modal__title" id="mht-title">Hapus Teman?</h2>
+      <p class="modal__body">Apakah Anda yakin ingin menghapus <strong>Andi Saputra</strong> dari daftar teman?</p>
+      <div class="modal__actions">
+        <a href="#" class="btn btn--ghost" aria-label="Batal hapus teman">Batal</a>
+        <button type="button" class="btn btn--danger">Hapus</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Undang Teman -->
+  <div class="modal" id="modal-undang-teman" role="dialog" aria-modal="true" aria-labelledby="mut-title">
+    <div class="modal__box">
+      <h2 class="modal__title" id="mut-title">Undang Teman</h2>
+      <p class="modal__note">Undang bersifat simulasi, tanpa pengiriman email asli.</p>
+      <form class="form" action="#">
+        <fieldset class="form__fieldset">
+          <legend class="form__legend">Pilih teman untuk diundang:</legend>
+          <label class="form__check">
+            <input type="checkbox" id="undang-andi" />
+            <span class="form__check-mark"></span>
+            <span class="form__check-avatar form__check-avatar--a">AS</span>
+            Andi Saputra
+          </label>
+          <label class="form__check">
+            <input type="checkbox" id="undang-budi" />
+            <span class="form__check-mark"></span>
+            <span class="form__check-avatar form__check-avatar--b">BW</span>
+            Budi Wijaya
+          </label>
+          <label class="form__check">
+            <input type="checkbox" id="undang-citra" />
+            <span class="form__check-mark"></span>
+            <span class="form__check-avatar form__check-avatar--c">CN</span>
+            Citra Ningrum
+          </label>
+          <label class="form__check">
+            <input type="checkbox" id="undang-dewi" />
+            <span class="form__check-mark"></span>
+            <span class="form__check-avatar form__check-avatar--d">DH</span>
+            Dewi Hartati
+          </label>
+          <label class="form__check">
+            <input type="checkbox" id="undang-eka" />
+            <span class="form__check-mark"></span>
+            <span class="form__check-avatar form__check-avatar--e">EP</span>
+            Eka Prasetya
+          </label>
+        </fieldset>
+        <div class="modal__actions">
+          <a href="#" class="btn btn--ghost" aria-label="Batal undang teman">Batal</a>
+          <button type="submit" class="btn btn--primary">Undang</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Keluarkan Peserta -->
+  <div class="modal" id="modal-keluarkan" role="dialog" aria-modal="true" aria-labelledby="mk-title">
+    <div class="modal__box modal__box--sm">
+      <h2 class="modal__title" id="mk-title">Keluarkan Peserta?</h2>
+      <p class="modal__body">Apakah Anda yakin ingin mengeluarkan peserta ini dari perjalanan?</p>
+      <div class="modal__actions">
+        <a href="#" class="btn btn--ghost" aria-label="Batal keluarkan peserta">Batal</a>
+        <button type="button" class="btn btn--danger">Keluarkan</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Tambah Pengeluaran -->
+  <div class="modal" id="modal-tambah-pengeluaran" role="dialog" aria-modal="true" aria-labelledby="mtp-title">
+    <div class="modal__box">
+      <h2 class="modal__title" id="mtp-title">Tambah Pengeluaran</h2>
+      <form class="form" action="#">
+        <div class="form__group">
+          <label class="form__label" for="tpe-nama">Nama Pengeluaran <span class="form__required">*</span></label>
+          <input class="form__input" type="text" id="tpe-nama" placeholder="cth. Hotel, Makan, Tiket" required />
+        </div>
+        <div class="form__group">
+          <label class="form__label" for="tpe-jumlah">Jumlah (Rp) <span class="form__required">*</span></label>
+          <input class="form__input" type="number" id="tpe-jumlah" placeholder="0" min="0" required />
+        </div>
+        <div class="form__group">
+          <label class="form__label" for="tpe-dibayar">Dibayar oleh</label>
+          <select class="form__input form__select" id="tpe-dibayar">
+            <option value="andi">Andi Saputra</option>
+            <option value="budi">Budi Wijaya</option>
+            <option value="citra">Citra Ningrum</option>
+          </select>
+        </div>
+        <fieldset class="form__fieldset">
+          <legend class="form__legend">Dibagi ke:</legend>
+          <label class="form__check">
+            <input type="checkbox" id="bagi-andi" checked />
+            <span class="form__check-mark"></span>
+            Andi Saputra
+          </label>
+          <label class="form__check">
+            <input type="checkbox" id="bagi-budi" checked />
+            <span class="form__check-mark"></span>
+            Budi Wijaya
+          </label>
+          <label class="form__check">
+            <input type="checkbox" id="bagi-citra" checked />
+            <span class="form__check-mark"></span>
+            Citra Ningrum
+          </label>
+        </fieldset>
+        <div class="modal__actions">
+          <a href="#" class="btn btn--ghost" aria-label="Batal tambah pengeluaran">Batal</a>
+          <button type="submit" class="btn btn--primary">Simpan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Edit Pengeluaran -->
+  <div class="modal" id="modal-edit-pengeluaran" role="dialog" aria-modal="true" aria-labelledby="mep2-title">
+    <div class="modal__box">
+      <h2 class="modal__title" id="mep2-title">Edit Pengeluaran</h2>
+      <form class="form" action="#">
+        <div class="form__group">
+          <label class="form__label" for="epe-nama">Nama Pengeluaran</label>
+          <input class="form__input" type="text" id="epe-nama" value="Hotel Ubud Garden" />
+        </div>
+        <div class="form__group">
+          <label class="form__label" for="epe-jumlah">Jumlah (Rp)</label>
+          <input class="form__input" type="number" id="epe-jumlah" value="1800000" />
+        </div>
+        <div class="form__group">
+          <label class="form__label" for="epe-dibayar">Dibayar oleh</label>
+          <select class="form__input form__select" id="epe-dibayar">
+            <option value="andi" selected>Andi Saputra</option>
+            <option value="budi">Budi Wijaya</option>
+            <option value="citra">Citra Ningrum</option>
+          </select>
+        </div>
+        <div class="modal__actions">
+          <a href="#" class="btn btn--ghost" aria-label="Batal edit pengeluaran">Batal</a>
+          <button type="submit" class="btn btn--primary">Simpan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Hapus Pengeluaran -->
+  <div class="modal" id="modal-hapus-pengeluaran" role="dialog" aria-modal="true" aria-labelledby="mhpe-title">
+    <div class="modal__box modal__box--sm">
+      <h2 class="modal__title" id="mhpe-title">Hapus Pengeluaran?</h2>
+      <p class="modal__body">Apakah Anda yakin ingin menghapus pengeluaran ini?</p>
+      <div class="modal__actions">
+        <a href="#" class="btn btn--ghost" aria-label="Batal hapus pengeluaran">Batal</a>
+        <button type="button" class="btn btn--danger">Hapus</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       HEADER
+  ============================================================ -->
+  <header class="site-header">
+    <div class="site-header__inner container">
+      <a class="site-header__logo" href="#halaman-perjalanan" aria-label="TripTally beranda">
+        <!-- Logo: map pin outline -->
+        <svg class="site-header__logo-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M12 2C8.69 2 6 4.69 6 8c0 4.5 6 12 6 12s6-7.5 6-12c0-3.31-2.69-6-6-6z"/>
+          <circle cx="12" cy="8" r="2"/>
+        </svg>
+        TripTally
+      </a>
+      <nav class="site-nav" aria-label="Navigasi utama">
+        <a class="site-nav__link" href="#halaman-perjalanan">
+          <!-- Plane icon -->
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M22 2L11 13"/>
+            <path d="M22 2L15 22l-4-9-9-4 19-7z"/>
+          </svg>
+          Perjalanan
+        </a>
+        <a class="site-nav__link" href="#halaman-teman">
+          <!-- Users icon -->
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+          Teman
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ============================================================
+       MAIN
+  ============================================================ -->
+  <main class="main-content container" id="main">
+
+    <!-- ======================================================
+         HALAMAN PERJALANAN
+    ====================================================== -->
+    <section class="page" id="halaman-perjalanan" aria-labelledby="h-perjalanan-title">
+      <div class="page__header">
+        <h1 class="page__title" id="h-perjalanan-title">Perjalanan Saya</h1>
+        <a href="#modal-tambah-perjalanan" class="btn btn--primary" aria-label="Tambah perjalanan baru">
+          <!-- Plus icon -->
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true">
+            <line x1="12" y1="5" x2="12" y2="19"/>
+            <line x1="5" y1="12" x2="19" y2="12"/>
+          </svg>
+          Tambah Perjalanan
+        </a>
+      </div>
+
+      <div class="trip-grid">
+
+        <!-- Card 1: Liburan Bali -->
+        <article class="trip-card" aria-labelledby="card-bali-title">
+          <div class="trip-card__header">
+            <div>
+              <span class="badge badge--active">Berlangsung</span>
+            </div>
+            <div class="trip-card__actions">
+              <a href="#modal-edit-perjalanan" class="btn btn--icon btn--icon-edit" title="Edit" aria-label="Edit perjalanan Liburan Bali">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                </svg>
+              </a>
+              <a href="#modal-hapus-perjalanan" class="btn btn--icon btn--icon-delete" title="Hapus" aria-label="Hapus perjalanan Liburan Bali">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <polyline points="3 6 5 6 21 6"/>
+                  <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+                  <path d="M10 11v6"/>
+                  <path d="M14 11v6"/>
+                  <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+                </svg>
+              </a>
+            </div>
+          </div>
+          <h2 class="trip-card__title" id="card-bali-title">
+            <a href="#halaman-detail" class="trip-card__link">Liburan Bali</a>
+          </h2>
+          <p class="trip-card__dest">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-inline" aria-hidden="true"><path d="M12 2C8.69 2 6 4.69 6 8c0 4.5 6 12 6 12s6-7.5 6-12c0-3.31-2.69-6-6-6z"/><circle cx="12" cy="8" r="2"/></svg>
+            Bali, Indonesia
+          </p>
+          <p class="trip-card__date">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-inline" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            10 Jul – 14 Jul 2025
+          </p>
+          <p class="trip-card__participants">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-inline" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            4 peserta
+          </p>
+          <div class="trip-card__progress">
+            <div class="trip-card__progress-label">
+              <span>Progress</span>
+              <span>3/5 selesai</span>
+            </div>
+            <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" aria-label="Progress 60%">
+              <div class="progress-bar__fill" style="--progress: 60%"></div>
+            </div>
+          </div>
+          <span class="trip-card__cta" aria-hidden="true">Lihat detail →</span>
+        </article>
+
+        <!-- Card 2: Weekend Yogyakarta -->
+        <article class="trip-card" aria-labelledby="card-jogja-title">
+          <div class="trip-card__header">
+            <div>
+              <span class="badge badge--planned">Direncanakan</span>
+            </div>
+            <div class="trip-card__actions">
+              <a href="#modal-edit-perjalanan" class="btn btn--icon btn--icon-edit" title="Edit" aria-label="Edit perjalanan Weekend Yogyakarta">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                </svg>
+              </a>
+              <a href="#modal-hapus-perjalanan" class="btn btn--icon btn--icon-delete" title="Hapus" aria-label="Hapus perjalanan Weekend Yogyakarta">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <polyline points="3 6 5 6 21 6"/>
+                  <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+                  <path d="M10 11v6"/><path d="M14 11v6"/>
+                  <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+                </svg>
+              </a>
+            </div>
+          </div>
+          <h2 class="trip-card__title" id="card-jogja-title">
+            <a href="#halaman-detail" class="trip-card__link">Weekend Yogyakarta</a>
+          </h2>
+          <p class="trip-card__dest">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-inline" aria-hidden="true"><path d="M12 2C8.69 2 6 4.69 6 8c0 4.5 6 12 6 12s6-7.5 6-12c0-3.31-2.69-6-6-6z"/><circle cx="12" cy="8" r="2"/></svg>
+            Yogyakarta, DIY
+          </p>
+          <p class="trip-card__date">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-inline" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            2 Agu – 4 Agu 2025
+          </p>
+          <p class="trip-card__participants">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-inline" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            3 peserta
+          </p>
+          <div class="trip-card__progress">
+            <div class="trip-card__progress-label">
+              <span>Progress</span>
+              <span>1/4 selesai</span>
+            </div>
+            <div class="progress-bar" role="progressbar" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" aria-label="Progress 25%">
+              <div class="progress-bar__fill" style="--progress: 25%"></div>
+            </div>
+          </div>
+          <span class="trip-card__cta" aria-hidden="true">Lihat detail →</span>
+        </article>
+
+        <!-- Card 3: Trip Labuan Bajo -->
+        <article class="trip-card" aria-labelledby="card-labuan-title">
+          <div class="trip-card__header">
+            <div>
+              <span class="badge badge--done">Selesai</span>
+            </div>
+            <div class="trip-card__actions">
+              <a href="#modal-edit-perjalanan" class="btn btn--icon btn--icon-edit" title="Edit" aria-label="Edit perjalanan Trip Labuan Bajo">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                </svg>
+              </a>
+              <a href="#modal-hapus-perjalanan" class="btn btn--icon btn--icon-delete" title="Hapus" aria-label="Hapus perjalanan Trip Labuan Bajo">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <polyline points="3 6 5 6 21 6"/>
+                  <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+                  <path d="M10 11v6"/><path d="M14 11v6"/>
+                  <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+                </svg>
+              </a>
+            </div>
+          </div>
+          <h2 class="trip-card__title" id="card-labuan-title">
+            <a href="#halaman-detail" class="trip-card__link">Trip Labuan Bajo</a>
+          </h2>
+          <p class="trip-card__dest">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-inline" aria-hidden="true"><path d="M12 2C8.69 2 6 4.69 6 8c0 4.5 6 12 6 12s6-7.5 6-12c0-3.31-2.69-6-6-6z"/><circle cx="12" cy="8" r="2"/></svg>
+            Labuan Bajo, NTT
+          </p>
+          <p class="trip-card__date">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-inline" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            15 Mei – 20 Mei 2025
+          </p>
+          <p class="trip-card__participants">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-inline" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            5 peserta
+          </p>
+          <div class="trip-card__progress">
+            <div class="trip-card__progress-label">
+              <span>Progress</span>
+              <span>6/6 selesai</span>
+            </div>
+            <div class="progress-bar" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" aria-label="Progress 100%">
+              <div class="progress-bar__fill" style="--progress: 100%"></div>
+            </div>
+          </div>
+          <span class="trip-card__cta" aria-hidden="true">Lihat detail →</span>
+        </article>
+
+      </div><!-- /.trip-grid -->
+    </section>
+
+
+    <!-- ======================================================
+         HALAMAN DETAIL PERJALANAN (Liburan Bali)
+    ====================================================== -->
+    <section class="page" id="halaman-detail" aria-labelledby="h-detail-title">
+
+      <div class="detail-header">
+        <a href="#halaman-perjalanan" class="btn btn--ghost btn--back" aria-label="Kembali ke daftar perjalanan">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="19" y1="12" x2="5" y2="12"/>
+            <polyline points="12 19 5 12 12 5"/>
+          </svg>
+          Kembali
+        </a>
+        <div class="detail-header__info">
+          <h2 class="detail-header__title" id="h-detail-title">Liburan Bali</h2>
+          <p class="detail-header__meta">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-inline" aria-hidden="true"><path d="M12 2C8.69 2 6 4.69 6 8c0 4.5 6 12 6 12s6-7.5 6-12c0-3.31-2.69-6-6-6z"/><circle cx="12" cy="8" r="2"/></svg>
+            Bali, Indonesia &nbsp;|&nbsp;
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-inline" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            10 Jul – 14 Jul 2025 &nbsp;|&nbsp;
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-inline" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            4 peserta
+          </p>
+        </div>
+        <span class="badge badge--active">Berlangsung</span>
+      </div>
+
+      <div class="detail-progress">
+        <div class="trip-card__progress-label">
+          <span>Progress keseluruhan</span>
+          <span>3/5 selesai</span>
+        </div>
+        <div class="progress-bar progress-bar--lg" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" aria-label="Progress 60%">
+          <div class="progress-bar__fill" style="--progress: 60%"></div>
+        </div>
+      </div>
+
+      <!-- Tab Navigation via radio inputs -->
+      <div class="tabs">
+        <input class="tabs__radio" type="radio" name="detail-tab" id="tab-itinerary" checked />
+        <input class="tabs__radio" type="radio" name="detail-tab" id="tab-peserta" />
+        <input class="tabs__radio" type="radio" name="detail-tab" id="tab-splitbill" />
+
+        <nav class="tabs__nav" aria-label="Tab detail perjalanan">
+          <label class="tabs__label" for="tab-itinerary">
+            <!-- Calendar icon -->
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+              <line x1="16" y1="2" x2="16" y2="6"/>
+              <line x1="8" y1="2" x2="8" y2="6"/>
+              <line x1="3" y1="10" x2="21" y2="10"/>
+            </svg>
+            Itinerary
+          </label>
+          <label class="tabs__label" for="tab-peserta">
+            <!-- Users icon -->
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+            Peserta
+          </label>
+          <label class="tabs__label" for="tab-splitbill">
+            <!-- Split/bill icon -->
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="2" y="5" width="20" height="14" rx="2"/>
+              <line x1="2" y1="10" x2="22" y2="10"/>
+            </svg>
+            Split Bill
+          </label>
+        </nav>
+
+        <!-- ====== TAB: ITINERARY ====== -->
+        <div class="tabs__panel" id="panel-itinerary">
+          <div class="panel-header">
+            <h2 class="panel-title">Itinerary Perjalanan</h2>
+            <a href="#modal-tambah-aktivitas" class="btn btn--primary btn--sm" aria-label="Tambah aktivitas">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true">
+                <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+              </svg>
+              Tambah Aktivitas
+            </a>
+          </div>
+
+          <!-- Hari 1 -->
+          <div class="day-group">
+            <h3 class="day-group__title">
+              <span class="day-group__label">Hari 1</span>
+              <span class="day-group__date">Kamis, 10 Juli 2025</span>
+            </h3>
+
+            <ul class="activity-list" role="list">
+
+              <li class="activity-item">
+                <label class="activity-item__check-wrap" aria-label="Tandai selesai">
+                  <input class="activity-item__checkbox" type="checkbox" aria-label="Selesai: Tiba di Bandara Ngurah Rai" />
+                  <span class="activity-item__checkmark"></span>
+                </label>
+                <div class="activity-item__body">
+                  <div class="activity-item__row">
+                    <span class="activity-item__time">09:00</span>
+                    <span class="activity-item__title">Tiba di Bandara Ngurah Rai</span>
+                  </div>
+                  <p class="activity-item__loc">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-inline" aria-hidden="true"><path d="M12 2C8.69 2 6 4.69 6 8c0 4.5 6 12 6 12s6-7.5 6-12c0-3.31-2.69-6-6-6z"/><circle cx="12" cy="8" r="2"/></svg>
+                    Bandara Ngurah Rai, Denpasar
+                  </p>
+                  <p class="activity-item__note">Ambil bagasi, naik taksi ke Ubud.</p>
+                </div>
+                <div class="activity-item__actions">
+                  <a href="#modal-edit-aktivitas" class="btn btn--icon btn--icon-edit" title="Edit" aria-label="Edit aktivitas Tiba di Bandara">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                      <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                    </svg>
+                  </a>
+                  <a href="#modal-hapus-aktivitas" class="btn btn--icon btn--icon-delete" title="Hapus" aria-label="Hapus aktivitas Tiba di Bandara">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <polyline points="3 6 5 6 21 6"/>
+                      <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+                      <path d="M10 11v6"/><path d="M14 11v6"/>
+                      <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+                    </svg>
+                  </a>
+                </div>
+              </li>
+
+              <li class="activity-item">
+                <label class="activity-item__check-wrap" aria-label="Tandai selesai">
+                  <input class="activity-item__checkbox" type="checkbox" aria-label="Selesai: Check-in Hotel Ubud" checked />
+                  <span class="activity-item__checkmark"></span>
+                </label>
+                <div class="activity-item__body">
+                  <div class="activity-item__row">
+                    <span class="activity-item__time">14:00</span>
+                    <span class="activity-item__title">Check-in Hotel Ubud</span>
+                  </div>
+                  <p class="activity-item__loc">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-inline" aria-hidden="true"><path d="M12 2C8.69 2 6 4.69 6 8c0 4.5 6 12 6 12s6-7.5 6-12c0-3.31-2.69-6-6-6z"/><circle cx="12" cy="8" r="2"/></svg>
+                    Ubud, Bali
+                  </p>
+                  <p class="activity-item__note">Bawa kartu identitas untuk check-in.</p>
+                </div>
+                <div class="activity-item__actions">
+                  <a href="#modal-edit-aktivitas" class="btn btn--icon btn--icon-edit" title="Edit" aria-label="Edit aktivitas Check-in">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                      <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                    </svg>
+                  </a>
+                  <a href="#modal-hapus-aktivitas" class="btn btn--icon btn--icon-delete" title="Hapus" aria-label="Hapus aktivitas Check-in">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <polyline points="3 6 5 6 21 6"/>
+                      <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+                      <path d="M10 11v6"/><path d="M14 11v6"/>
+                      <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+                    </svg>
+                  </a>
+                </div>
+              </li>
+
+            </ul>
+          </div><!-- /.day-group -->
+
+          <!-- Hari 2 -->
+          <div class="day-group">
+            <h3 class="day-group__title">
+              <span class="day-group__label">Hari 2</span>
+              <span class="day-group__date">Jumat, 11 Juli 2025</span>
+            </h3>
+            <ul class="activity-list" role="list">
+
+              <li class="activity-item">
+                <label class="activity-item__check-wrap" aria-label="Tandai selesai">
+                  <input class="activity-item__checkbox" type="checkbox" aria-label="Selesai: Kunjungan Pura Tirta Empul" checked />
+                  <span class="activity-item__checkmark"></span>
+                </label>
+                <div class="activity-item__body">
+                  <div class="activity-item__row">
+                    <span class="activity-item__time">08:30</span>
+                    <span class="activity-item__title">Kunjungan Pura Tirta Empul</span>
+                  </div>
+                  <p class="activity-item__loc">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-inline" aria-hidden="true"><path d="M12 2C8.69 2 6 4.69 6 8c0 4.5 6 12 6 12s6-7.5 6-12c0-3.31-2.69-6-6-6z"/><circle cx="12" cy="8" r="2"/></svg>
+                    Tampaksiring, Gianyar
+                  </p>
+                  <p class="activity-item__note">Pakai sarung dan selendang di pintu masuk.</p>
+                </div>
+                <div class="activity-item__actions">
+                  <a href="#modal-edit-aktivitas" class="btn btn--icon btn--icon-edit" title="Edit" aria-label="Edit aktivitas Pura Tirta Empul">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                      <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                    </svg>
+                  </a>
+                  <a href="#modal-hapus-aktivitas" class="btn btn--icon btn--icon-delete" title="Hapus" aria-label="Hapus aktivitas Pura Tirta Empul">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <polyline points="3 6 5 6 21 6"/>
+                      <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+                      <path d="M10 11v6"/><path d="M14 11v6"/>
+                      <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+                    </svg>
+                  </a>
+                </div>
+              </li>
+
+              <li class="activity-item">
+                <label class="activity-item__check-wrap" aria-label="Tandai selesai">
+                  <input class="activity-item__checkbox" type="checkbox" aria-label="Selesai: Makan Siang di Warung Babi Guling" />
+                  <span class="activity-item__checkmark"></span>
+                </label>
+                <div class="activity-item__body">
+                  <div class="activity-item__row">
+                    <span class="activity-item__time">12:00</span>
+                    <span class="activity-item__title">Makan Siang di Warung Babi Guling</span>
+                  </div>
+                  <p class="activity-item__loc">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-inline" aria-hidden="true"><path d="M12 2C8.69 2 6 4.69 6 8c0 4.5 6 12 6 12s6-7.5 6-12c0-3.31-2.69-6-6-6z"/><circle cx="12" cy="8" r="2"/></svg>
+                    Ubud, Bali
+                  </p>
+                  <p class="activity-item__note">Reservasi meja untuk 4 orang.</p>
+                </div>
+                <div class="activity-item__actions">
+                  <a href="#modal-edit-aktivitas" class="btn btn--icon btn--icon-edit" title="Edit" aria-label="Edit aktivitas Makan Siang">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                      <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                    </svg>
+                  </a>
+                  <a href="#modal-hapus-aktivitas" class="btn btn--icon btn--icon-delete" title="Hapus" aria-label="Hapus aktivitas Makan Siang">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <polyline points="3 6 5 6 21 6"/>
+                      <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+                      <path d="M10 11v6"/><path d="M14 11v6"/>
+                      <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+                    </svg>
+                  </a>
+                </div>
+              </li>
+
+            </ul>
+          </div><!-- /.day-group -->
+
+          <!-- Hari 3 -->
+          <div class="day-group">
+            <h3 class="day-group__title">
+              <span class="day-group__label">Hari 3</span>
+              <span class="day-group__date">Sabtu, 12 Juli 2025</span>
+            </h3>
+            <ul class="activity-list" role="list">
+
+              <li class="activity-item">
+                <label class="activity-item__check-wrap" aria-label="Tandai selesai">
+                  <input class="activity-item__checkbox" type="checkbox" aria-label="Selesai: Snorkeling di Nusa Penida" />
+                  <span class="activity-item__checkmark"></span>
+                </label>
+                <div class="activity-item__body">
+                  <div class="activity-item__row">
+                    <span class="activity-item__time">07:00</span>
+                    <span class="activity-item__title">Snorkeling di Nusa Penida</span>
+                  </div>
+                  <p class="activity-item__loc">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-inline" aria-hidden="true"><path d="M12 2C8.69 2 6 4.69 6 8c0 4.5 6 12 6 12s6-7.5 6-12c0-3.31-2.69-6-6-6z"/><circle cx="12" cy="8" r="2"/></svg>
+                    Nusa Penida, Klungkung
+                  </p>
+                  <p class="activity-item__note">Naik fast boat dari Sanur, durasi ±45 menit.</p>
+                </div>
+                <div class="activity-item__actions">
+                  <a href="#modal-edit-aktivitas" class="btn btn--icon btn--icon-edit" title="Edit" aria-label="Edit aktivitas Snorkeling">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                      <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                    </svg>
+                  </a>
+                  <a href="#modal-hapus-aktivitas" class="btn btn--icon btn--icon-delete" title="Hapus" aria-label="Hapus aktivitas Snorkeling">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <polyline points="3 6 5 6 21 6"/>
+                      <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+                      <path d="M10 11v6"/><path d="M14 11v6"/>
+                      <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+                    </svg>
+                  </a>
+                </div>
+              </li>
+
+            </ul>
+          </div><!-- /.day-group -->
+
+        </div><!-- /.tabs__panel panel-itinerary -->
+
+
+        <!-- ====== TAB: PESERTA ====== -->
+        <div class="tabs__panel" id="panel-peserta">
+          <div class="panel-header">
+            <h2 class="panel-title">Peserta Perjalanan</h2>
+            <a href="#modal-undang-teman" class="btn btn--primary btn--sm" aria-label="Undang teman">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true">
+                <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+              </svg>
+              Undang Teman
+            </a>
+          </div>
+          <p class="panel-note">Undang bersifat simulasi, tanpa pengiriman email asli.</p>
+
+          <ul class="friend-list" role="list">
+            <li class="friend-item">
+              <div class="friend-item__avatar avatar avatar--a">AS</div>
+              <div class="friend-item__info">
+                <span class="friend-item__name">Andi Saputra</span>
+                <span class="friend-item__email">andi@email.com</span>
+              </div>
+              <span class="badge badge--organizer">Organizer</span>
+              <a href="#modal-keluarkan" class="btn btn--sm btn--danger-outline" title="Keluarkan dari perjalanan" aria-label="Keluarkan Andi Saputra">Keluarkan</a>
+            </li>
+            <li class="friend-item">
+              <div class="friend-item__avatar avatar avatar--b">BW</div>
+              <div class="friend-item__info">
+                <span class="friend-item__name">Budi Wijaya</span>
+                <span class="friend-item__email">budi@email.com</span>
+              </div>
+              <a href="#modal-keluarkan" class="btn btn--sm btn--danger-outline" title="Keluarkan dari perjalanan" aria-label="Keluarkan Budi Wijaya">Keluarkan</a>
+            </li>
+            <li class="friend-item">
+              <div class="friend-item__avatar avatar avatar--c">CN</div>
+              <div class="friend-item__info">
+                <span class="friend-item__name">Citra Ningrum</span>
+                <span class="friend-item__email">citra@email.com</span>
+              </div>
+              <a href="#modal-keluarkan" class="btn btn--sm btn--danger-outline" title="Keluarkan dari perjalanan" aria-label="Keluarkan Citra Ningrum">Keluarkan</a>
+            </li>
+          </ul>
+        </div><!-- /.tabs__panel panel-peserta -->
+
+
+        <!-- ====== TAB: SPLIT BILL ====== -->
+        <div class="tabs__panel" id="panel-splitbill">
+          <div class="panel-header">
+            <h2 class="panel-title">Split Bill</h2>
+            <a href="#modal-tambah-pengeluaran" class="btn btn--primary btn--sm" aria-label="Tambah pengeluaran">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true">
+                <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+              </svg>
+              Tambah Pengeluaran
+            </a>
+          </div>
+
+          <!-- Ringkasan -->
+          <div class="bill-summary">
+            <div class="bill-summary__item">
+              <span class="bill-summary__label">Total Pengeluaran</span>
+              <span class="bill-summary__value">Rp 2.550.000</span>
+            </div>
+            <div class="bill-summary__item bill-summary__item--paid">
+              <span class="bill-summary__label">Sudah Terbayar</span>
+              <span class="bill-summary__value">Rp 2.200.000</span>
+            </div>
+            <div class="bill-summary__item bill-summary__item--unpaid">
+              <span class="bill-summary__label">Belum Terbayar</span>
+              <span class="bill-summary__value">Rp 350.000</span>
+            </div>
+          </div>
+
+          <!-- Ringkasan per orang -->
+          <div class="bill-per-person">
+            <h3 class="bill-per-person__title">Ringkasan per Orang</h3>
+            <p class="bill-per-person__note">Angka ringkasan adalah data contoh statis pada prototipe ini.</p>
+            <div class="bill-per-person__grid">
+              <div class="bill-person-card">
+                <div class="avatar avatar--a avatar--sm">AS</div>
+                <div class="bill-person-card__info">
+                  <span class="bill-person-card__name">Andi Saputra</span>
+                  <span class="bill-person-card__detail">Menalangi: Rp 2.250.000 · Tagihan: Rp 850.000</span>
+                </div>
+                <span class="bill-person-card__balance bill-person-card__balance--plus">+Rp 1.400.000</span>
+              </div>
+              <div class="bill-person-card">
+                <div class="avatar avatar--b avatar--sm">BW</div>
+                <div class="bill-person-card__info">
+                  <span class="bill-person-card__name">Budi Wijaya</span>
+                  <span class="bill-person-card__detail">Menalangi: Rp 0 · Tagihan: Rp 850.000</span>
+                </div>
+                <span class="bill-person-card__balance bill-person-card__balance--minus">-Rp 850.000</span>
+              </div>
+              <div class="bill-person-card">
+                <div class="avatar avatar--c avatar--sm">CN</div>
+                <div class="bill-person-card__info">
+                  <span class="bill-person-card__name">Citra Ningrum</span>
+                  <span class="bill-person-card__detail">Menalangi: Rp 300.000 · Tagihan: Rp 850.000</span>
+                </div>
+                <span class="bill-person-card__balance bill-person-card__balance--minus">-Rp 550.000</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Daftar Pengeluaran -->
+          <h3 class="section-subtitle">Daftar Pengeluaran</h3>
+
+          <!-- Pengeluaran 1: Hotel -->
+          <article class="expense-card" aria-labelledby="exp-hotel-title">
+            <div class="expense-card__header">
+              <div>
+                <h4 class="expense-card__title" id="exp-hotel-title">Hotel Ubud Garden</h4>
+                <p class="expense-card__meta">Dibayar oleh <strong>Andi Saputra</strong></p>
+              </div>
+              <div class="expense-card__right">
+                <span class="expense-card__amount">Rp 1.800.000</span>
+                <span class="badge badge--lunas-auto">Lunas</span>
+                <div class="expense-card__actions">
+                  <a href="#modal-edit-pengeluaran" class="btn btn--icon btn--icon-edit" title="Edit" aria-label="Edit pengeluaran hotel">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                      <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                    </svg>
+                  </a>
+                  <a href="#modal-hapus-pengeluaran" class="btn btn--icon btn--icon-delete" title="Hapus" aria-label="Hapus pengeluaran hotel">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <polyline points="3 6 5 6 21 6"/>
+                      <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+                      <path d="M10 11v6"/><path d="M14 11v6"/>
+                      <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+                    </svg>
+                  </a>
+                </div>
+              </div>
+            </div>
+            <ul class="expense-split" role="list">
+              <li class="expense-split__item">
+                <label class="expense-split__check">
+                  <input type="checkbox" checked disabled aria-label="Andi Saputra sudah bayar (pembayar awal)" />
+                  <span class="expense-split__checkmark expense-split__checkmark--disabled"></span>
+                  <div class="avatar avatar--a avatar--xs">AS</div>
+                  <span>Andi Saputra</span>
+                </label>
+                <span class="expense-split__share">Rp 600.000</span>
+              </li>
+              <li class="expense-split__item">
+                <label class="expense-split__check">
+                  <input type="checkbox" checked aria-label="Budi Wijaya sudah bayar" />
+                  <span class="expense-split__checkmark"></span>
+                  <div class="avatar avatar--b avatar--xs">BW</div>
+                  <span>Budi Wijaya</span>
+                </label>
+                <span class="expense-split__share">Rp 600.000</span>
+              </li>
+              <li class="expense-split__item">
+                <label class="expense-split__check">
+                  <input type="checkbox" checked aria-label="Citra Ningrum sudah bayar" />
+                  <span class="expense-split__checkmark"></span>
+                  <div class="avatar avatar--c avatar--xs">CN</div>
+                  <span>Citra Ningrum</span>
+                </label>
+                <span class="expense-split__share">Rp 600.000</span>
+              </li>
+            </ul>
+          </article>
+
+          <!-- Pengeluaran 2: Makan Malam -->
+          <article class="expense-card" aria-labelledby="exp-makan-title">
+            <div class="expense-card__header">
+              <div>
+                <h4 class="expense-card__title" id="exp-makan-title">Makan Malam Jimbaran</h4>
+                <p class="expense-card__meta">Dibayar oleh <strong>Andi Saputra</strong></p>
+              </div>
+              <div class="expense-card__right">
+                <span class="expense-card__amount">Rp 450.000</span>
+                <span class="badge badge--lunas-auto">Lunas</span>
+                <div class="expense-card__actions">
+                  <a href="#modal-edit-pengeluaran" class="btn btn--icon btn--icon-edit" title="Edit" aria-label="Edit pengeluaran makan malam">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                      <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                    </svg>
+                  </a>
+                  <a href="#modal-hapus-pengeluaran" class="btn btn--icon btn--icon-delete" title="Hapus" aria-label="Hapus pengeluaran makan malam">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <polyline points="3 6 5 6 21 6"/>
+                      <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+                      <path d="M10 11v6"/><path d="M14 11v6"/>
+                      <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+                    </svg>
+                  </a>
+                </div>
+              </div>
+            </div>
+            <ul class="expense-split" role="list">
+              <li class="expense-split__item">
+                <label class="expense-split__check">
+                  <input type="checkbox" checked disabled aria-label="Andi Saputra sudah bayar (pembayar awal)" />
+                  <span class="expense-split__checkmark expense-split__checkmark--disabled"></span>
+                  <div class="avatar avatar--a avatar--xs">AS</div>
+                  <span>Andi Saputra</span>
+                </label>
+                <span class="expense-split__share">Rp 150.000</span>
+              </li>
+              <li class="expense-split__item">
+                <label class="expense-split__check">
+                  <input type="checkbox" checked aria-label="Budi Wijaya sudah bayar" />
+                  <span class="expense-split__checkmark"></span>
+                  <div class="avatar avatar--b avatar--xs">BW</div>
+                  <span>Budi Wijaya</span>
+                </label>
+                <span class="expense-split__share">Rp 150.000</span>
+              </li>
+              <li class="expense-split__item">
+                <label class="expense-split__check">
+                  <input type="checkbox" aria-label="Citra Ningrum sudah bayar" />
+                  <span class="expense-split__checkmark"></span>
+                  <div class="avatar avatar--c avatar--xs">CN</div>
+                  <span>Citra Ningrum</span>
+                </label>
+                <span class="expense-split__share">Rp 150.000</span>
+              </li>
+            </ul>
+          </article>
+
+          <!-- Pengeluaran 3: Sewa Motor -->
+          <article class="expense-card" aria-labelledby="exp-motor-title">
+            <div class="expense-card__header">
+              <div>
+                <h4 class="expense-card__title" id="exp-motor-title">Sewa Motor 2 Hari</h4>
+                <p class="expense-card__meta">Dibayar oleh <strong>Citra Ningrum</strong></p>
+              </div>
+              <div class="expense-card__right">
+                <span class="expense-card__amount">Rp 300.000</span>
+                <span class="badge badge--lunas-auto">Lunas</span>
+                <div class="expense-card__actions">
+                  <a href="#modal-edit-pengeluaran" class="btn btn--icon btn--icon-edit" title="Edit" aria-label="Edit pengeluaran sewa motor">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                      <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                    </svg>
+                  </a>
+                  <a href="#modal-hapus-pengeluaran" class="btn btn--icon btn--icon-delete" title="Hapus" aria-label="Hapus pengeluaran sewa motor">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <polyline points="3 6 5 6 21 6"/>
+                      <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+                      <path d="M10 11v6"/><path d="M14 11v6"/>
+                      <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+                    </svg>
+                  </a>
+                </div>
+              </div>
+            </div>
+            <ul class="expense-split" role="list">
+              <li class="expense-split__item">
+                <label class="expense-split__check">
+                  <input type="checkbox" aria-label="Andi Saputra sudah bayar" />
+                  <span class="expense-split__checkmark"></span>
+                  <div class="avatar avatar--a avatar--xs">AS</div>
+                  <span>Andi Saputra</span>
+                </label>
+                <span class="expense-split__share">Rp 100.000</span>
+              </li>
+              <li class="expense-split__item">
+                <label class="expense-split__check">
+                  <input type="checkbox" aria-label="Budi Wijaya sudah bayar" />
+                  <span class="expense-split__checkmark"></span>
+                  <div class="avatar avatar--b avatar--xs">BW</div>
+                  <span>Budi Wijaya</span>
+                </label>
+                <span class="expense-split__share">Rp 100.000</span>
+              </li>
+              <li class="expense-split__item">
+                <label class="expense-split__check">
+                  <input type="checkbox" checked disabled aria-label="Citra Ningrum sudah bayar (pembayar awal)" />
+                  <span class="expense-split__checkmark expense-split__checkmark--disabled"></span>
+                  <div class="avatar avatar--c avatar--xs">CN</div>
+                  <span>Citra Ningrum</span>
+                </label>
+                <span class="expense-split__share">Rp 100.000</span>
+              </li>
+            </ul>
+          </article>
+
+          <!-- Empty State -->
+          <div class="empty-state empty-state--hidden" aria-hidden="true">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="empty-state__icon-svg" aria-hidden="true">
+              <rect x="2" y="5" width="20" height="14" rx="2"/>
+              <line x1="2" y1="10" x2="22" y2="10"/>
+            </svg>
+            <p class="empty-state__text">Belum ada pengeluaran</p>
+            <p class="empty-state__sub">Tambahkan pengeluaran pertama untuk mulai membagi biaya.</p>
+            <a href="#modal-tambah-pengeluaran" class="btn btn--primary btn--sm">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Tambah Pengeluaran
+            </a>
+          </div>
+
+        </div><!-- /.tabs__panel panel-splitbill -->
+
+      </div><!-- /.tabs -->
+    </section><!-- /#halaman-detail -->
+
+
+    <!-- ======================================================
+         HALAMAN TEMAN
+    ====================================================== -->
+    <section class="page" id="halaman-teman" aria-labelledby="h-teman-title">
+      <div class="page__header">
+        <h2 class="page__title" id="h-teman-title">Daftar Teman</h2>
+        <a href="#modal-tambah-teman" class="btn btn--primary" aria-label="Tambah teman baru">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true">
+            <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+          </svg>
+          Tambah Teman
+        </a>
+      </div>
+
+      <ul class="friend-list friend-list--page" role="list">
+
+        <li class="friend-item">
+          <div class="friend-item__avatar avatar avatar--a">AS</div>
+          <div class="friend-item__info">
+            <span class="friend-item__name">Andi Saputra</span>
+            <span class="friend-item__email">andi@email.com</span>
+          </div>
+          <div class="friend-item__actions">
+            <a href="#modal-edit-teman" class="btn btn--icon btn--icon-edit" title="Edit" aria-label="Edit Andi Saputra">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+              </svg>
+            </a>
+            <a href="#modal-hapus-teman" class="btn btn--icon btn--icon-delete" title="Hapus" aria-label="Hapus Andi Saputra">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="3 6 5 6 21 6"/>
+                <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+                <path d="M10 11v6"/><path d="M14 11v6"/>
+                <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+              </svg>
+            </a>
+          </div>
+        </li>
+
+        <li class="friend-item">
+          <div class="friend-item__avatar avatar avatar--b">BW</div>
+          <div class="friend-item__info">
+            <span class="friend-item__name">Budi Wijaya</span>
+            <span class="friend-item__email">budi@email.com</span>
+          </div>
+          <div class="friend-item__actions">
+            <a href="#modal-edit-teman" class="btn btn--icon btn--icon-edit" title="Edit" aria-label="Edit Budi Wijaya">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+              </svg>
+            </a>
+            <a href="#modal-hapus-teman" class="btn btn--icon btn--icon-delete" title="Hapus" aria-label="Hapus Budi Wijaya">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="3 6 5 6 21 6"/>
+                <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+                <path d="M10 11v6"/><path d="M14 11v6"/>
+                <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+              </svg>
+            </a>
+          </div>
+        </li>
+
+        <li class="friend-item">
+          <div class="friend-item__avatar avatar avatar--c">CN</div>
+          <div class="friend-item__info">
+            <span class="friend-item__name">Citra Ningrum</span>
+            <span class="friend-item__email">citra@email.com</span>
+          </div>
+          <div class="friend-item__actions">
+            <a href="#modal-edit-teman" class="btn btn--icon btn--icon-edit" title="Edit" aria-label="Edit Citra Ningrum">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+              </svg>
+            </a>
+            <a href="#modal-hapus-teman" class="btn btn--icon btn--icon-delete" title="Hapus" aria-label="Hapus Citra Ningrum">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="3 6 5 6 21 6"/>
+                <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+                <path d="M10 11v6"/><path d="M14 11v6"/>
+                <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+              </svg>
+            </a>
+          </div>
+        </li>
+
+        <li class="friend-item">
+          <div class="friend-item__avatar avatar avatar--d">DH</div>
+          <div class="friend-item__info">
+            <span class="friend-item__name">Dewi Hartati</span>
+            <span class="friend-item__email">dewi@email.com</span>
+          </div>
+          <div class="friend-item__actions">
+            <a href="#modal-edit-teman" class="btn btn--icon btn--icon-edit" title="Edit" aria-label="Edit Dewi Hartati">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+              </svg>
+            </a>
+            <a href="#modal-hapus-teman" class="btn btn--icon btn--icon-delete" title="Hapus" aria-label="Hapus Dewi Hartati">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="3 6 5 6 21 6"/>
+                <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+                <path d="M10 11v6"/><path d="M14 11v6"/>
+                <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+              </svg>
+            </a>
+          </div>
+        </li>
+
+        <li class="friend-item">
+          <div class="friend-item__avatar avatar avatar--e">EP</div>
+          <div class="friend-item__info">
+            <span class="friend-item__name">Eka Prasetya</span>
+            <span class="friend-item__email">eka@email.com</span>
+          </div>
+          <div class="friend-item__actions">
+            <a href="#modal-edit-teman" class="btn btn--icon btn--icon-edit" title="Edit" aria-label="Edit Eka Prasetya">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+              </svg>
+            </a>
+            <a href="#modal-hapus-teman" class="btn btn--icon btn--icon-delete" title="Hapus" aria-label="Hapus Eka Prasetya">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="3 6 5 6 21 6"/>
+                <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+                <path d="M10 11v6"/><path d="M14 11v6"/>
+                <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+              </svg>
+            </a>
+          </div>
+        </li>
+
+      </ul>
+
+      <!-- Empty State teman -->
+      <div class="empty-state empty-state--hidden" aria-hidden="true">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="empty-state__icon-svg" aria-hidden="true">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+          <circle cx="12" cy="7" r="4"/>
+        </svg>
+        <p class="empty-state__text">Belum ada teman</p>
+        <p class="empty-state__sub">Tambahkan teman untuk diajak merencanakan perjalanan.</p>
+        <a href="#modal-tambah-teman" class="btn btn--primary btn--sm">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Tambah Teman
+        </a>
+      </div>
+
+    </section><!-- /#halaman-teman -->
+
+  </main>
+
+  <!-- ============================================================
+       FOOTER
+  ============================================================ -->
+  <footer class="site-footer">
+    <p class="site-footer__text">Prototipe UI: data tidak tersimpan setelah refresh.</p>
+    <p class="site-footer__copy">© 2025 TripTally</p>
+  </footer>
+
+</body>
+</html>
